@@ -2,7 +2,6 @@ import {
 	AST_NODE_TYPES,
 	ASTUtils,
 	TSESLint,
-	TSESLintScope,
 	TSESTree,
 } from '@typescript-eslint/utils';
 
@@ -287,13 +286,16 @@ export function getVariableReferences(
 ): TSESLint.Scope.Reference[] {
 	if (ASTUtils.isVariableDeclarator(node)) {
 		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-		return context.getDeclaredVariables(node)[0]?.references?.slice(1) ?? [];
+		return (
+			context.sourceCode.getDeclaredVariables!(node)[0]?.references?.slice(1) ??
+			[]
+		);
 	}
 
 	return [];
 }
 
-interface InnermostFunctionScope extends TSESLintScope.FunctionScope {
+interface InnermostFunctionScope extends TSESLint.Scope.Scopes.FunctionScope {
 	block:
 		| TSESTree.ArrowFunctionExpression
 		| TSESTree.FunctionDeclaration
@@ -305,12 +307,12 @@ export function getInnermostFunctionScope(
 	asyncQueryNode: TSESTree.Identifier
 ): InnermostFunctionScope | null {
 	const innermostScope = ASTUtils.getInnermostScope(
-		context.getScope(),
+		context.sourceCode.getScope!(asyncQueryNode),
 		asyncQueryNode
 	);
 
 	if (
-		innermostScope.type === 'function' &&
+		innermostScope.type === TSESLint.Scope.ScopeType.function &&
 		ASTUtils.isFunction(innermostScope.block)
 	) {
 		return innermostScope as unknown as InnermostFunctionScope;

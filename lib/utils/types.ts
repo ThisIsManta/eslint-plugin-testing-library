@@ -1,8 +1,9 @@
 import { type TSESLint } from '@typescript-eslint/utils';
 
+type RuleSeverity = 'error' | 'warn' | false;
 type RecommendedConfig<TOptions extends readonly unknown[]> =
-	| TSESLint.RuleMetaDataDocs['recommended']
-	| [TSESLint.RuleMetaDataDocs['recommended'], ...TOptions];
+	| RuleSeverity
+	| [RuleSeverity, ...TOptions];
 
 // These 2 types are copied from @typescript-eslint/utils' CreateRuleMeta
 // and modified to our needs

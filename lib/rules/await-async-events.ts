@@ -56,13 +56,13 @@ export default createTestingLibraryRule<Options, MessageIds>({
 						oneOf: [
 							{
 								type: 'string',
-								enum: EVENTS_SIMULATORS,
+								enum: Array.from(EVENTS_SIMULATORS),
 							},
 							{
 								type: 'array',
 								items: {
 									type: 'string',
-									enum: EVENTS_SIMULATORS,
+									enum: Array.from(EVENTS_SIMULATORS),
 								},
 							},
 						],

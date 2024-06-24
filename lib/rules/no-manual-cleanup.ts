@@ -64,7 +64,8 @@ export default createTestingLibraryRule<Options, MessageIds>({
 			if (isImportDeclaration(moduleNode)) {
 				// case: import utils from 'testing-library-module'
 				if (isImportDefaultSpecifier(moduleNode.specifiers[0])) {
-					const { references } = context.getDeclaredVariables(moduleNode)[0];
+					const { references } =
+						context.sourceCode.getDeclaredVariables!(moduleNode)[0];
 
 					reportImportReferences(references);
 				}

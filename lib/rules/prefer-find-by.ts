@@ -69,8 +69,6 @@ export default createTestingLibraryRule<Options, MessageIds>({
 	defaultOptions: [],
 
 	create(context, _, helpers) {
-		const sourceCode = context.getSourceCode();
-
 		/**
 		 * Reports the invalid usage of wait* plus getBy/QueryBy methods and automatically fixes the scenario
 		 * @param node - The CallExpression node that contains the waitFor method
@@ -363,7 +361,9 @@ export default createTestingLibraryRule<Options, MessageIds>({
 					const waitOptions = node.arguments[1];
 					let waitOptionsSourceCode = '';
 					if (isObjectExpression(waitOptions)) {
-						waitOptionsSourceCode = `, ${sourceCode.getText(waitOptions)}`;
+						waitOptionsSourceCode = `, ${context.sourceCode.getText(
+							waitOptions
+						)}`;
 					}
 
 					const queryVariant = getFindByQueryVariant(fullQueryMethod);
@@ -387,7 +387,7 @@ export default createTestingLibraryRule<Options, MessageIds>({
 								return null;
 							}
 							const newCode = `${caller}.${queryVariant}${queryMethod}(${callArguments
-								.map((callArgNode) => sourceCode.getText(callArgNode))
+								.map((callArgNode) => context.sourceCode.getText(callArgNode))
 								.join(', ')}${waitOptionsSourceCode})`;
 							return fixer.replaceText(node, newCode);
 						},
@@ -428,13 +428,13 @@ export default createTestingLibraryRule<Options, MessageIds>({
 						const allFixes: TSESLint.RuleFix[] = [];
 						// this updates waitFor with findBy*
 						const newCode = `${findByMethod}(${callArguments
-							.map((callArgNode) => sourceCode.getText(callArgNode))
+							.map((callArgNode) => context.sourceCode.getText(callArgNode))
 							.join(', ')})`;
 						allFixes.push(fixer.replaceText(node, newCode));
 
 						// this adds the findBy* declaration - adding it to the list of destructured variables { findBy* } = render()
 						const definition = findRenderDefinitionDeclaration(
-							context.getScope(),
+							context.sourceCode.getScope!(node),
 							fullQueryMethod
 						);
 						// I think it should always find it, otherwise code should not be valid (it'd be using undeclared variables)
@@ -459,7 +459,7 @@ export default createTestingLibraryRule<Options, MessageIds>({
 								return allFixes;
 							}
 							// the last character of a destructuring is always a  "}", so we should replace it with the findBy* declaration
-							const textDestructuring = sourceCode.getText(
+							const textDestructuring = context.sourceCode.getText(
 								allVariableDeclarations
 							);
 							const text = textDestructuring.replace(

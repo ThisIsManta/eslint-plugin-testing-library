@@ -76,7 +76,7 @@ export default createTestingLibraryRule<Options, MessageIds>({
 
 			if (ASTUtils.isIdentifier(node)) {
 				const nodeVariable = ASTUtils.findVariable(
-					context.getScope(),
+					context.sourceCode.getScope!(node),
 					node.name
 				);
 				if (!nodeVariable) {

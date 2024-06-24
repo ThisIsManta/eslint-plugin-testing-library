@@ -53,7 +53,7 @@ export default createTestingLibraryRule<Options, MessageIds>({
 					utilsToCheckFor: {
 						type: 'object',
 						properties: DEBUG_UTILS.reduce<
-							Record<string, JSONSchema.JSONSchema7>
+							Record<string, JSONSchema.JSONSchema4>
 						>(
 							(obj, name) => ({
 								[name]: { type: 'boolean' },
@@ -175,7 +175,8 @@ export default createTestingLibraryRule<Options, MessageIds>({
 
 				const isVariableFromBuiltInConsole = builtInConsoleNodes.some(
 					(variableDeclarator) => {
-						const variables = context.getDeclaredVariables(variableDeclarator);
+						const variables =
+							context.sourceCode.getDeclaredVariables!(variableDeclarator);
 						return variables.some(
 							({ name }) =>
 								name === callExpressionIdentifier.name &&

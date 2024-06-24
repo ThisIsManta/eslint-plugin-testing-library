@@ -1,5 +1,3 @@
-import { resolve } from 'path';
-
 import { TSESLint } from '@typescript-eslint/utils';
 
 const DEFAULT_TEST_CASE_CONFIG = {
@@ -37,7 +35,7 @@ export const createRuleTester = (
 	parserOptions: Partial<TSESLint.ParserOptions> = {}
 ): TSESLint.RuleTester => {
 	return new TestingLibraryRuleTester({
-		parser: resolve('./node_modules/@typescript-eslint/parser'),
+		parser: require.resolve('@typescript-eslint/parser'),
 		parserOptions: {
 			ecmaVersion: 2018,
 			sourceType: 'module',

@@ -102,7 +102,7 @@ export default createTestingLibraryRule<Options, MessageIds>({
 
 		return {
 			// internal helper function, helps store all variables with regex to `variableNodesWithRegexs`
-			// could potentially be refactored to using context.getDeclaredVariables()
+			// could potentially be refactored to using sourceCode.getDeclaredVariables()
 			VariableDeclarator(node: TSESTree.Node) {
 				if (
 					ASTUtils.isVariableDeclarator(node) &&
